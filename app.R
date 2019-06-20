@@ -1,6 +1,7 @@
 library(jose)
 library(shiny)
 library(R6)
+library(DT)
 
 secret<- 'G9lUtPpXA5vKMmoZEYasxr4GdusaJwNwWj_D-fdxEL8'
 
@@ -77,7 +78,7 @@ ui <- pageWithSidebar(
     h3("Value of specified header"),
     verbatimTextOutput("value")	,
     h3("StratumUser Object"),
-    verbatimTextOutput("stratumUser")	
+    DTOutput("stratumUser")	
     #h3("USER"),
     #verbatimTextOutput("user"),
     #h3("EMAIL"),
@@ -161,10 +162,20 @@ server <- function(input, output, session) {
   })
   
   
-  output$stratumUser <- renderText({
+  output$stratumUser <- renderDT({
     if (!is.null(rv$jwt)) {
       user <- StratumUser$new(secret = secret, jwt = rv$jwt)
-      user$username()
+      stratumuser <- tribble(
+        ~method, ~value,
+        "is_authenticated()", user$is_authenticated(),
+        "username", user$username(),
+        "email", user$email(),
+        "name", user$name(),
+        "roles", user$roles(),
+        "has_role('HELMOND-ACC_WBM_ADMIN')", user$has_role('HELMOND-ACC_WBM_ADMIN')
+      )
+      
+      stratumuser
     }
   })
   
