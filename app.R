@@ -78,7 +78,7 @@ ui <- pageWithSidebar(
     h3("Value of specified header"),
     verbatimTextOutput("value")	,
     h3("StratumUser Object"),
-    DTOutput("stratumUser")	
+    dataTableOutput(" stratumUser")	
     #h3("USER"),
     #verbatimTextOutput("user"),
     #h3("EMAIL"),
@@ -154,15 +154,24 @@ server <- function(input, output, session) {
     if (is.null(input$header))  {
       return("NULL");
     }
-    if (nchar(input$header) < 1  ||  !exists(input$header, envir=session$request)) {
+    
+    if (is.na(input$header))  {
+      return("NULL");
+    }
+    
+    if (nchar(input$header) < 1)  {
       return("NULL");
   }
+  
+  #   if (nchar(input$header) < 1  ||  !exists(input$header, envir=session$request)) {
+  #     return("NULL");
+  # }
   
   return (get(input$header, envir=session$request));
   })
   
   
-  output$stratumUser <- renderDT({
+  output$stratumUser <- renderDataTable({
     if (!is.null(rv$jwt)) {
       user <- StratumUser$new(secret = secret, jwt = rv$jwt)
       stratumuser <- tribble(
