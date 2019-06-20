@@ -78,7 +78,7 @@ ui <- pageWithSidebar(
     h3("Value of specified header"),
     verbatimTextOutput("value")	,
     h3("StratumUser Object"),
-    DTOutput(" stratumUser")	
+    DTOutput("stratumUser")	
     #h3("USER"),
     #verbatimTextOutput("user"),
     #h3("EMAIL"),
