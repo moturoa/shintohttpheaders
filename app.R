@@ -2,8 +2,10 @@ library(jose)
 library(shiny)
 library(R6)
 library(DT)
+library(tidyverse)
 
-secret<- 'G9lUtPpXA5vKMmoZEYasxr4GdusaJwNwWj_D-fdxEL8'
+secret <- 'G9lUtPpXA5vKMmoZEYasxr4GdusaJwNwWj_D-fdxEL8'
+jwt_sample <- 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ICJlcmljLnZhbmVzY2hAYnJpZGdlcy1pdC5ubCIsICJuYW1lIjogIkVyaWMgdmFuIEVzY2giLCAiZ3JvdXBzIjogWyJQRUFSTFlHQVRFLUtFTkRPX1dCTV9BRE1JTiIsICJURVNUQ1VTVE9NRVJfV0JNX1VTRVJTIiwgIkhFTE1PTkQtQUNDX1dCTV9BRE1JTiIsICJIRUxNT05ELUFDQ19XQk1fVVNFUlMiXSwgImVtYWlsIjogImVyaWMudmFuZXNjaEBicmlkZ2VzLWl0Lm5sIn0.B-aOlfuzmpC_TOGaJi94df8gcFdFBYkFSq6xqigaaUM' 
 
 StratumUser = R6::R6Class("StratumUser",
                           private = list(
@@ -174,6 +176,7 @@ server <- function(input, output, session) {
   output$stratumUser <- renderDT({
     if (!is.null(rv$jwt)) {
       user <- StratumUser$new(secret = secret, jwt = rv$jwt)
+      #user <- StratumUser$new(secret = secret, jwt = jwt_sample)
       stratumuser <- tribble(
         ~method, ~value,
         "is_authenticated()", user$is_authenticated(),
