@@ -179,12 +179,12 @@ server <- function(input, output, session) {
       #user <- StratumUser$new(secret = secret, jwt = jwt_sample)
       stratumuser <- tribble(
         ~method, ~value,
-        "is_authenticated()", user$is_authenticated(),
-        "username", user$username(),
-        "email", user$email(),
-        "name", user$name(),
-        "roles", user$roles(),
-        "has_role('HELMOND-ACC_WBM_ADMIN')", user$has_role('HELMOND-ACC_WBM_ADMIN')
+        "user$is_authenticated()", user$is_authenticated(),
+        "user$username()", user$username(),
+        "user$email()", user$email(),
+        "user$name()", user$name(),
+        "user$roles()", user$roles(),
+        "user$has_role('HELMOND-ACC_WBM_ADMIN')", user$has_role('HELMOND-ACC_WBM_ADMIN')
       )
       
       stratumuser
