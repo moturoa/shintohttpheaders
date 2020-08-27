@@ -1,7 +1,7 @@
 Package: shintohttpheaders
 Type: Package
 Title: HTTP Header decoding for Shiny apps
-Version: 0.1
+Version: 0.2
 Author: Eric van Esch, Remko Duursma
 Maintainer: Remko Duursma <remko@shintolabs.nl>
 Description: Authentication object based on HTTP headers
@@ -9,4 +9,4 @@ Depends: shiny, R6, jose, DT
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
