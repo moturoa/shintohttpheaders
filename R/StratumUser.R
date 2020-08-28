@@ -15,7 +15,7 @@ StratumUser <- R6::R6Class("StratumUser",
                              
                              has_valid_jwt = FALSE,
                              jwt_authenticated = NULL,
-                             jwt_user = NULL,
+                             jwt_username = NULL,
                              jwt_email = NULL,
                              jwt_name = NULL,
                              
