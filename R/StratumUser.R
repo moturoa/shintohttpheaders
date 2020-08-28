@@ -6,6 +6,7 @@ StratumUser <- R6::R6Class("StratumUser",
                            public = list(
                              
                              username = NULL,
+                             has_access = FALSE,
                              
                              is_shiny_server = FALSE,
                              is_local = FALSE,
@@ -19,19 +20,16 @@ StratumUser <- R6::R6Class("StratumUser",
                              jwt_email = NULL,
                              jwt_name = NULL,
                              
-                             local_roles = NULL,
+                             required_role = NULL,
                              
+
                              
                              initialize = function(secret = NULL, 
                                                    jwt_preset = NULL, 
                                                    session = NULL,
-                                                   local_roles = NULL) {
+                                                   required_role = NULL) {
                                
                                private$secret <- secret
-                               
-                               # default roles, wordt alleen gebruikt voor non-shinyproxy applicaties:
-                               # een soort default.
-                               self$local_roles <- local_roles
                                
                                # shiny server pro
                                self$session_user <- session$user
@@ -52,6 +50,7 @@ StratumUser <- R6::R6Class("StratumUser",
                                }
                                
                                self$has_valid_jwt <- isTRUE(nchar(private$jwt) > 0 & grepl("[.]", private$jwt))
+                               self$required_role <- required_role
                                
                                # AD authenticatie
                                if(self$has_valid_jwt) {
@@ -65,7 +64,9 @@ StratumUser <- R6::R6Class("StratumUser",
                                    private$jwt_roles <- private$jwt_object$groups
                                  }
                                  
-                                 self$jwt_authenticated <- !is.null(private$jwt_object$username)
+                                 # Toegang tot deze app?
+                                 self$jwt_authenticated <- any(startsWith(private$jwt_roles,self$required_role))
+                                   
                                  self$jwt_username <- private$jwt_object$username
                                  self$jwt_email <- private$jwt_object$email
                                  self$jwt_name <- private$jwt_object$name
@@ -82,6 +83,11 @@ StratumUser <- R6::R6Class("StratumUser",
                                self$username <- "unknown"
                                if(self$is_shinyproxy)self$username <- self$jwt_username
                                if(self$is_shiny_server)self$username <- self$session_user
+                               
+                               
+                               # Authenticatie: combinatie
+                               if(self$is_local | self$is_shiny_server)self$has_access <- TRUE
+                               if(self$is_shinyproxy)self$has_access <- self$jwt_authenticated
                                
                              },
                              
@@ -113,11 +119,10 @@ StratumUser <- R6::R6Class("StratumUser",
                                names(tab) <- c("customer","application","role")
                                tab
                              },
-                             has_role = function(role, application) {
+                             has_role = function(role) {
                               
                                tab <- self$roles_table()
-                               
-                               role %in% tab$role[tab$application == application]
+                               role %in% tab$role
                                
                              },
                              dump = function() {
