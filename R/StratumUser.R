@@ -110,19 +110,28 @@ StratumUser <- R6::R6Class("StratumUser",
                                    return(self$local_roles)
                                  } else {
                                    return(
-                                     data.frame(customer = NA, application = NA, role = NA)
+                                     data.frame(group = NA, customer = NA, application = NA, role = NA)
                                    )  
                                  }
                                  
                                }
                                tab <- as.data.frame(do.call(rbind, strsplit(rol, "_")))
                                names(tab) <- c("customer","application","role")
+                               tab <- cbind(data.frame(group = self$roles()), tab)
+                               
                                tab
                              },
+                             
                              has_role = function(role) {
-                              
+                               
+                               if(!self$has_access)return(FALSE)
+                               
                                tab <- self$roles_table()
-                               role %in% tab$role
+                               tab_auth <- tab[startsWith(tab$group, self$required_role),]
+                               
+                               if(nrow(tab_auth) == 0)return(FALSE)
+                               
+                               role %in% tab_auth$role
                                
                              },
                              dump = function() {
