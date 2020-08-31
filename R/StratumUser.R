@@ -2,7 +2,6 @@
 #' @export
 StratumUser <- R6::R6Class("StratumUser",
                            
-                           
                            public = list(
                              
                              username = NULL,
@@ -89,7 +88,6 @@ StratumUser <- R6::R6Class("StratumUser",
                                
                              },
                              
-                             
                              roles = function() {
                                gr <- private$jwt_object$groups
                                
@@ -99,6 +97,7 @@ StratumUser <- R6::R6Class("StratumUser",
                                  return(gr)
                                }
                              },
+                             
                              roles_table = function(){
                                rol <- self$roles()
                                
@@ -108,7 +107,10 @@ StratumUser <- R6::R6Class("StratumUser",
                                    return(self$local_roles)
                                  } else {
                                    return(
-                                     data.frame(group = NA, customer = NA, application = NA, role = NA)
+                                     data.frame(group = NA_character_, 
+                                                customer = NA_character_, 
+                                                application = NA_character_, 
+                                                role = NA_character_)
                                    )  
                                  }
                                  
@@ -121,11 +123,15 @@ StratumUser <- R6::R6Class("StratumUser",
                                tab
                              },
                              
-                             has_role = function(role) {
+                             has_role = function(role, local = FALSE) {
+                               
+                               if(self$is_local)return(local)
                                
                                if(!self$has_access)return(FALSE)
                                
                                tab <- self$roles_table()
+                               if(all(is.na(tab$group)))return(FALSE)
+                               
                                tab_auth <- tab[startsWith(tab$group, self$required_role),]
                                
                                if(nrow(tab_auth) == 0)return(FALSE)
