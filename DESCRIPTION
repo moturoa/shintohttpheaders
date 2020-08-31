@@ -1,7 +1,7 @@
 Package: shintohttpheaders
 Type: Package
 Title: HTTP Header decoding for Shiny apps
-Version: 0.2-4
+Version: 0.2-5
 Author: Eric van Esch, Remko Duursma
 Maintainer: Remko Duursma <remko@shintolabs.nl>
 Description: Authentication object based on HTTP headers

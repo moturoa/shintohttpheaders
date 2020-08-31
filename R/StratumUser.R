@@ -22,8 +22,6 @@ StratumUser <- R6::R6Class("StratumUser",
                              
                              required_role = NULL,
                              
-
-                             
                              initialize = function(secret = NULL, 
                                                    jwt_preset = NULL, 
                                                    session = NULL,
@@ -115,9 +113,10 @@ StratumUser <- R6::R6Class("StratumUser",
                                  }
                                  
                                }
-                               tab <- as.data.frame(do.call(rbind, strsplit(rol, "_")))
+                               tab <- as.data.frame(do.call(rbind, strsplit(rol, "_")), 
+                                                    stringsAsFactors = FALSE)
                                names(tab) <- c("customer","application","role")
-                               tab <- cbind(data.frame(group = self$roles()), tab)
+                               tab <- cbind(data.frame(group = self$roles(), stringsAsFactors = FALSE), tab)
                                
                                tab
                              },
